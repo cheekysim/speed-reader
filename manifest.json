@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Speed Reader",
+    "description": "Allows you to Speed Read selected text.",
+    "version": "1.0.0",
+    "permissions": [
+        "contextMenus",
+        "scripting",
+        "activeTab"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
