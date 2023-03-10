@@ -3,6 +3,8 @@ import api from "./v1/api.js"
 import config from "./config.json" assert { type: "json" };
 const app = express();
 
+// Include middleware
+app.use(express.json());
 // Include different API versions
 app.use(api);
 
