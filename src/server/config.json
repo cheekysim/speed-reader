@@ -1,5 +1,5 @@
 {
-    "supportedVersions": [
-        "1"
-    ]
+  "supportedVersions": ["1"],
+  "port": 3002,
+  "host": "localhost"
 }
