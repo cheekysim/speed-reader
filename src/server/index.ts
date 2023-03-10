@@ -1,9 +1,12 @@
-const express = require("express");
+import express from "express";
+import api from "./v1/api.js"
 const app = express();
-const { supportedVersions } = require("./config.json");
+
+const port = 3002;
+const host = "localhost";
 
 // Include different API versions
-app.use(require("./v1/api"));
+app.use(api);
 
 app.all("*", function(req, res) {
   // Redirect the user to the repository
@@ -13,4 +16,4 @@ app.all("*", function(req, res) {
   res.status(404).json({ error: "Page not found" });
 });
 
-app.listen(3002, () => console.log("Server is online"));
+app.listen(port, () => console.log(`Server running at http://${host}:${port}`));

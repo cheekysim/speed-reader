@@ -1,8 +1,9 @@
-function speedread(text, tabId) {
+function speedread(text: string, tabId: number) {
+  // @ts-ignore - chrome is not defined in the types
   chrome.scripting.executeScript({
     target: { tabId: tabId },
     args: [text],
-    function: (text) => {
+    function: (text: string) => {
       let div = document.createElement("div");
       div.setAttribute("id", "sr-main");
       div.style.position = "fixed";
@@ -16,20 +17,24 @@ function speedread(text, tabId) {
       div.style.backgroundColor = "hsl(0, 0%, 10%)";
       div.style.zIndex = "99999";
       div.style.borderRadius = "10px";
+      // @ts-ignore - body is not defined in the types
       body.appendBefore(div, body.firstChild);
     },
   });
 }
 
+// @ts-ignore - chrome is not defined in the types
 chrome.contextMenus.create({
   id: "speedread",
   title: "Speedread",
   contexts: ["selection"],
 });
 
+// @ts-ignore - chrome is not defined in the types
 chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId == "speedread") {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    // @ts-ignore - chrome is not defined in the types
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs: any) => {
       speedread(info.selectionText, tabs[0].id);
     });
   }
