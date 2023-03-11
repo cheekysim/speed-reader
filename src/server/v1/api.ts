@@ -23,9 +23,6 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
     }
   }
 
-  // Temp code
-  if (req.body.fontSize) fontSize = req.body.fontSize;
-
   for await (let word of req.body.words) {
     // Create a canvas
     let canvas = createCanvas(400, 200);
@@ -52,33 +49,23 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
       canvas.width / 2 - textWidth / 2,
       canvas.height / 2 + fSize / 2
     );
-    console.log("font size: " + fSize + "px");
 
     // Add the canvas to the array
     canvasArr.push(ctx);
   }
 
-  // const buffer: Buffer = canvasArr[0];
-  // res.writeHead(200, {
-  //   "Content-Type": "image/png",
-  //   "Content-Length": buffer.length
-  // });
-  // res.end(buffer);
-
   // Create the GIF
+  res.setHeader("Content-Type", "image/gif");
   const encoder = new GIFEncoder(400, 200);
+  encoder.createReadStream().pipe(res);
+
   encoder.start();
-  encoder.setRepeat(0);
-  encoder.setDelay(100);
+  encoder.setRepeat(-1);
+  encoder.setDelay(300);
   for (let context of canvasArr) {
-    console.log(typeof(context));
-    // encoder.addFrame(context);
+    encoder.addFrame(context);
   }
   encoder.finish();
-
-  // Send the GIF as a response
-  res.setHeader("Content-Type", "image/gif");
-  encoder.createReadStream().pipe(res);
 });
 
 export default router;

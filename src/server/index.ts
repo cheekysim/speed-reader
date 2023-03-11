@@ -1,12 +1,13 @@
 import express, { Request, Response } from "express";
-import apiv1 from "./v1/api.js"
+import apiV1 from "./v1/api.js"
 import config from "./config.json" assert { type: "json" };
+
 const app = express();
 
 // Include middleware
 app.use(express.json());
 // Include different API versions
-app.use(apiv1);
+app.use(apiV1);
 
 // Handle 404 requests
 app.all("*", function(req: Request, res: Response) {
