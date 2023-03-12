@@ -5,6 +5,17 @@ import GIFEncoder from "gifencoder";
 const router = express.Router();
 
 router.post("/api/v1/create", async function (req: Request, res: Response) {
+  /*
+    This is the main API endpoint. It takes in a JSON object with the following properties:
+    - words: The words to be displayed on the GIF
+    - theme: The theme of the GIF (light or dark)
+    - font: The font size of the GIF (small, medium or large)
+    - wpm: The words per minute of the GIF (default is 300)
+    
+    It returns a GIF with the words displayed on it.
+  */
+
+  // Create an array of canvases
   const canvasArr: CanvasRenderingContext2D[] = [];
 
   // Define variables
@@ -22,8 +33,8 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
         fontSize = 150;
     }
   }
-
-  for await (let word of req.body.words) {
+  
+  for await (let word of req.body.words.split(' ')) {
     // Create a canvas
     let canvas = createCanvas(400, 200);
     let ctx = canvas.getContext("2d");
@@ -61,7 +72,11 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
 
   encoder.start();
   encoder.setRepeat(-1);
-  encoder.setDelay(300);
+  
+  // Calculate delay from words per minute or default to 200 ( 300 wpm )
+  let delay = (1000 / (req.body.wpm / 60)) || 200;
+
+  encoder.setDelay(delay);
   for (let context of canvasArr) {
     encoder.addFrame(context);
   }
