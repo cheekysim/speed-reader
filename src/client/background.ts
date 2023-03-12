@@ -23,11 +23,10 @@ function speedread(text: string, tabId: number) {
       // Format text
       // Remove Newlines
       text = text.replace(/(\r\n|\n|\r)/gm, " ").trim();
-      // Replace multiple spaces with a single comma
-      text = text.replace(/( *)/g, ",").trim();
-      // Replace multiple commas with a single comma
-      text = text.replace(/(,*)/g, ",").trim();
-
+      console.log(text);
+      // Replace multiple spaces and commas with a single comma
+      text = text.replace(/( +)|(,+)/g, ",").trim();
+      console.log(text);
       // Create the gif
       let url = new URL('http://localhost:3002/api/v1/create');
       url.searchParams.set('words', text)
