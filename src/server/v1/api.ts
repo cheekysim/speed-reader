@@ -85,8 +85,8 @@ router.get("/api/v1/create", async function (req: Request, res: Response) {
   
   // Calculate delay from words per minute or default to 200 ( 300 wpm )
   let delay = !isNaN(parseInt(wpm)) ? (1000 / (parseInt((wpm).toString()) / 60)) : 200;
-
   encoder.setDelay(delay);
+
   for (let context of canvasArr) {
     encoder.addFrame(context);
   }
