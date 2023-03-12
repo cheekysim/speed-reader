@@ -4,6 +4,7 @@ function speedread(text: string, tabId: number) {
     target: { tabId: tabId },
     args: [text],
     function: (text: string) => {
+      // Create the main container
       let div = document.createElement("div");
       div.setAttribute("id", "sr-main");
       div.style.position = "fixed";
@@ -17,6 +18,62 @@ function speedread(text: string, tabId: number) {
       div.style.backgroundColor = "hsl(0, 0%, 10%)";
       div.style.zIndex = "99999";
       div.style.borderRadius = "10px";
+      
+      // Format text
+      // Remove Newlines
+      text = text.replace(/(\r\n|\n|\r)/gm, " ").trim();
+      // Replace multiple spaces with a single comma
+      text = text.replace(/( *)/g, ",").trim();
+      // Replace multiple commas with a single comma
+      text = text.replace(/(,*)/g, ",").trim();
+
+      // Create the gif
+      let url = new URL('http://localhost:3000/api/v1/create');
+      url.searchParams.set('words', text)
+      url.searchParams.set('theme', 'dark')
+      url.searchParams.set('font', 'medium')
+      url.searchParams.set('wpm', '300')
+      let xml = new XMLHttpRequest();
+      xml.open('GET', url.toString());
+      xml.responseType = 'blob';
+      xml.timeout = 10000;
+      xml.send();
+      xml.onreadystatechange = () => {
+        if (xml.readyState === 4) {
+          if (xml.status === 200) {
+            let img = document.createElement('img');
+            img.src = URL.createObjectURL(xml.response);
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain';
+            div.appendChild(img);
+          }
+        }
+      }
+      xml.ontimeout = () => {
+        let p = document.createElement('p');
+        p.style.color = 'white';
+        p.style.textAlign = 'center';
+        p.innerText = 'Failed to create GIF';
+        div.appendChild(p);
+      }
+      // Create close button
+      let close = document.createElement("button");
+      close.innerText = "X";
+      close.style.position = "absolute";
+      close.style.top = "0";
+      close.style.right = "0";
+      close.style.padding = "10px";
+      close.style.backgroundColor = "hsl(0, 0%, 10%)";
+      close.style.border = "none";
+      close.style.color = "white";
+      close.style.fontWeight = "bold";
+      close.style.borderRadius = "0 0 0 10px";
+      close.onclick = () => {
+        div.remove();
+      };
+
+      // Append to body
       // @ts-ignore - body is not defined in the types
       body.appendBefore(div, body.firstChild);
     },
