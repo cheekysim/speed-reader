@@ -4,7 +4,7 @@ import GIFEncoder from "gifencoder";
 
 const router = express.Router();
 
-router.post("/api/v1/create", async function (req: Request, res: Response) {
+router.get("/api/v1/create", async function (req: Request, res: Response) {
   /*
     This is the main API endpoint. It takes in a JSON object with the following properties:
     - words: The words to be displayed on the GIF
@@ -22,23 +22,33 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
   let theme = "dark";
   let fontSize: number = 100;
 
-  if (!req.body.words)
+  let words: string | string[] = req.query.words ? decodeURIComponent((req.query.words).toString()) : "";
+  let themeQuery: string = req.query.theme ? decodeURIComponent((req.query.theme).toString()) : "";
+  let fontQuery: string = req.query.font ? decodeURIComponent((req.query.font).toString()) : "";
+  let wpm: string = req.query.wpm ? decodeURIComponent((req.query.wpm).toString()) : "";
+
+  if (!req.query.words)
     return res.status(400).json({ error: "Words must be provided" });
-  if (["light", "dark"].includes(req.body.theme)) theme = req.body.theme;
-  if (["small", "medium", "large"].includes(req.body.font)) {
-    switch (req.body.font) {
+  if (["light", "dark"].includes(themeQuery))
+    theme = themeQuery;
+  if (["small", "medium", "large"].includes(fontQuery)) {
+    switch (fontQuery) {
       case "small":
         fontSize = 50;
       case "large":
         fontSize = 150;
     }
   }
-  
-  for await (let word of req.body.words.split(' ')) {
+
+  words = words.split(",");
+
+  for await (let word of words) {
     // Create a canvas
     let canvas = createCanvas(400, 200);
     let ctx = canvas.getContext("2d");
     let fSize: number = fontSize;
+
+    if (["", " "].includes(word)) continue;
 
     // Fill in the background colour
     ctx.fillStyle = theme === "light" ? "#ffffff" : "#000000";
@@ -74,7 +84,7 @@ router.post("/api/v1/create", async function (req: Request, res: Response) {
   encoder.setRepeat(-1);
   
   // Calculate delay from words per minute or default to 200 ( 300 wpm )
-  let delay = (1000 / (req.body.wpm / 60)) || 200;
+  let delay = !isNaN(parseInt(wpm)) ? (1000 / (parseInt((wpm).toString()) / 60)) : 200;
 
   encoder.setDelay(delay);
   for (let context of canvasArr) {
