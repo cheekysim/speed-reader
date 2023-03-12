@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from  "cors";
 import apiV1 from "./v1/api.js"
 import config from "./config.json" assert { type: "json" };
 
@@ -6,6 +7,7 @@ const app = express();
 
 // Include middleware
 app.use(express.json());
+app.use(cors());
 // Include different API versions
 app.use(apiV1);
 
