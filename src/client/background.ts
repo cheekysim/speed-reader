@@ -19,20 +19,21 @@ function speedread(text: string, tabId: number) {
       div.style.backgroundColor = "hsl(0, 0%, 10%)";
       div.style.zIndex = "99999";
       div.style.borderRadius = "10px";
+      div.style.padding = ".5rem";
       
       // Format text
       // Remove Newlines
       text = text.replace(/(\r\n|\n|\r)/gm, " ").trim();
-      console.log(text);
+      
       // Replace multiple spaces and commas with a single comma
       text = text.replace(/( +)|(,+)/g, ",").trim();
-      console.log(text);
+      
       // Create the gif
       let url = new URL('http://localhost:3002/api/v1/create');
-      url.searchParams.set('words', text)
-      url.searchParams.set('theme', 'dark')
-      url.searchParams.set('font', 'medium')
-      url.searchParams.set('wpm', '300')
+      url.searchParams.set("words", text)
+      url.searchParams.set("theme", "dark")
+      url.searchParams.set("font", "medium")
+      url.searchParams.set("wpm", "300")
       let xml = new XMLHttpRequest();
       xml.open('GET', url.toString());
       xml.responseType = 'blob';
@@ -43,18 +44,19 @@ function speedread(text: string, tabId: number) {
           if (xml.status === 200) {
             let img = document.createElement('img');
             img.src = URL.createObjectURL(xml.response);
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'contain';
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "contain";
+            img.style.borderRadius = ".6rem";
             div.appendChild(img);
           }
         }
       }
       xml.ontimeout = () => {
-        let p = document.createElement('p');
-        p.style.color = 'white';
-        p.style.textAlign = 'center';
-        p.innerText = 'Failed to create GIF';
+        let p = document.createElement("p");
+        p.style.color = "white";
+        p.style.textAlign = "center";
+        p.innerText = "Failed to create GIF";
         div.appendChild(p);
       }
       // Create close button
@@ -69,6 +71,7 @@ function speedread(text: string, tabId: number) {
       close.style.color = "white";
       close.style.fontWeight = "bold";
       close.style.borderRadius = "0 0 0 10px";
+      close.style.cursor = "pointer";
       close.onclick = () => {
         div.remove();
       };
