@@ -12,14 +12,51 @@ function speedread(text: string, tabId: number) {
       div.style.display = "grid";
       div.style.placeItems = "center";
       div.style.width = "50vw";
-      div.style.height = "50vh";
+      div.style.height = "max-content";
       div.style.top = "50%";
       div.style.left = "50%";
       div.style.transform = "translate(-50%, -50%)";
       div.style.backgroundColor = "hsl(0, 0%, 10%)";
       div.style.zIndex = "99999";
       div.style.borderRadius = "10px";
-      div.style.padding = ".5rem";
+      div.style.padding = "0 .5rem .5rem .5rem";
+
+      // Create the header
+      let header = div.appendChild(document.createElement("div"));
+      header.style.display = "flex";
+      header.style.justifyContent = "flex-start";
+      header.style.width = "100%";
+      header.style.gap = "2rem";
+      let btnWrapper = header.appendChild(document.createElement("div"));
+      btnWrapper.style.display = "flex";
+      btnWrapper.style.gap = ".5rem";
+      btnWrapper.style.alignItems = "center";
+      let dot1 = btnWrapper.appendChild(document.createElement("div"));
+      dot1.style.backgroundColor = "red";
+      dot1.style.width = ".8rem";
+      dot1.style.height = ".8rem";
+      dot1.style.borderRadius = "100%";
+      dot1.style.cursor = "pointer";
+      dot1.setAttribute("role", "button");
+      dot1.addEventListener("click", () => div.remove());
+      dot1.addEventListener("mouseover", () => dot1.innerText = "X");
+      let dot2 = btnWrapper.appendChild(document.createElement("div"));
+      dot2.style.backgroundColor = "yellow";
+      dot2.style.width = ".8rem";
+      dot2.style.height = ".8rem";
+      dot2.style.borderRadius = "100%";
+      let dot3 = btnWrapper.appendChild(document.createElement("div"));
+      dot3.style.backgroundColor = "green";
+      dot3.style.width = ".8rem";
+      dot3.style.height = ".8rem";
+      dot3.style.borderRadius = "100%";
+      let h4 = header.appendChild(document.createElement("h4"));
+      h4.innerHTML = "Speedreader";
+      h4.style.color = "white";
+
+      // Create the image wrapper
+      let imgWrapper = div.appendChild(document.createElement("div"));
+      imgWrapper.style.width = "100%";
       
       // Format text
       // Remove Newlines
@@ -28,7 +65,7 @@ function speedread(text: string, tabId: number) {
       // Replace multiple spaces and commas with a single comma
       text = text.replace(/( +)|(,+)/g, ",").trim();
       
-      // Create the gif
+      // Create the GIF
       let url = new URL('http://localhost:3002/api/v1/create');
       url.searchParams.set("words", text)
       url.searchParams.set("theme", "dark")
@@ -40,16 +77,13 @@ function speedread(text: string, tabId: number) {
       xml.timeout = 10000;
       xml.send();
       xml.onreadystatechange = () => {
-        if (xml.readyState === 4) {
-          if (xml.status === 200) {
-            let img = document.createElement('img');
-            img.src = URL.createObjectURL(xml.response);
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "contain";
-            img.style.borderRadius = ".6rem";
-            div.appendChild(img);
-          }
+        if (xml.readyState === 4 && xml.status === 200) {
+          let img = imgWrapper.appendChild(document.createElement('img'));
+          img.src = URL.createObjectURL(xml.response);
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = "contain";
+          img.style.borderRadius = ".6rem";
         }
       }
       xml.ontimeout = () => {
@@ -59,6 +93,7 @@ function speedread(text: string, tabId: number) {
         p.innerText = "Failed to create GIF";
         div.appendChild(p);
       }
+
       // Create close button
       let close = document.createElement("button");
       close.innerText = "X";
@@ -72,10 +107,9 @@ function speedread(text: string, tabId: number) {
       close.style.fontWeight = "bold";
       close.style.borderRadius = "0 0 0 10px";
       close.style.cursor = "pointer";
-      close.onclick = () => {
-        div.remove();
-      };
+      close.addEventListener("click", () => div.remove());
       div.appendChild(close);
+
       // Append to body
       body.appendChild(div);
     },
