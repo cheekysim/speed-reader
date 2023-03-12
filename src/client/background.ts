@@ -4,6 +4,7 @@ function speedread(text: string, tabId: number) {
     target: { tabId: tabId },
     args: [text],
     function: (text: string) => {
+      let body = document.body;
       // Create the main container
       let div = document.createElement("div");
       div.setAttribute("id", "sr-main");
@@ -28,7 +29,7 @@ function speedread(text: string, tabId: number) {
       text = text.replace(/(,*)/g, ",").trim();
 
       // Create the gif
-      let url = new URL('http://localhost:3000/api/v1/create');
+      let url = new URL('http://localhost:3002/api/v1/create');
       url.searchParams.set('words', text)
       url.searchParams.set('theme', 'dark')
       url.searchParams.set('font', 'medium')
@@ -72,10 +73,9 @@ function speedread(text: string, tabId: number) {
       close.onclick = () => {
         div.remove();
       };
-
+      div.appendChild(close);
       // Append to body
-      // @ts-ignore - body is not defined in the types
-      body.appendBefore(div, body.firstChild);
+      body.appendChild(div);
     },
   });
 }
