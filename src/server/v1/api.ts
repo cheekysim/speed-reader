@@ -29,7 +29,7 @@ router.get("/api/v1/create", async function (req: Request, res: Response) {
 
   if (!req.query.words)
     return res.status(400).json({ error: "Words must be provided" });
-  if (["light", "dark"].includes(themeQuery))
+  if (["light", "dark", "transparent"].includes(themeQuery))
     theme = themeQuery;
   if (["small", "medium", "large"].includes(fontQuery)) {
     switch (fontQuery) {
@@ -51,8 +51,15 @@ router.get("/api/v1/create", async function (req: Request, res: Response) {
     if (["", " "].includes(word)) continue;
 
     // Fill in the background colour
-    ctx.fillStyle = theme === "light" ? "#ffffff" : "#000000";
-    ctx.fillRect(0, 0, 400, 200);
+    if (theme !== "transparent") {
+      ctx.fillStyle = theme === "light" ? "#ffffff" : "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else {
+      ctx.save();
+      ctx.fillStyle = "transparent";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
 
     // Add the text
     ctx.font = `${fontSize}px Sans`;
@@ -65,11 +72,7 @@ router.get("/api/v1/create", async function (req: Request, res: Response) {
     }
 
     let textWidth = ctx.measureText(word).width;
-    ctx.fillText(
-      word,
-      canvas.width / 2 - textWidth / 2,
-      canvas.height / 2 + fSize / 2
-    );
+    ctx.fillText(word, canvas.width / 2 - textWidth / 2, canvas.height / 2 + fSize / 2);
 
     // Add the canvas to the array
     canvasArr.push(ctx);

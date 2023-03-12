@@ -37,9 +37,15 @@ function speedread(text: string, tabId: number) {
       dot1.style.height = ".8rem";
       dot1.style.borderRadius = "100%";
       dot1.style.cursor = "pointer";
+      dot1.style.fontWeight = "bold";
+      dot1.style.fontSize = ".7rem";
+      dot1.style.textAlign = "center";
+      dot1.style.paddingTop = ".8px";
+      dot1.style.color = "rgb(56, 56, 56)";
       dot1.setAttribute("role", "button");
       dot1.addEventListener("click", () => div.remove());
       dot1.addEventListener("mouseover", () => dot1.innerText = "X");
+      dot1.addEventListener("mouseleave", () => dot1.innerText = null);
       let dot2 = btnWrapper.appendChild(document.createElement("div"));
       dot2.style.backgroundColor = "yellow";
       dot2.style.width = ".8rem";
@@ -68,7 +74,7 @@ function speedread(text: string, tabId: number) {
       // Create the GIF
       let url = new URL('http://localhost:3002/api/v1/create');
       url.searchParams.set("words", text)
-      url.searchParams.set("theme", "dark")
+      url.searchParams.set("theme", "transparent")
       url.searchParams.set("font", "medium")
       url.searchParams.set("wpm", "300")
       let xml = new XMLHttpRequest();
@@ -93,22 +99,6 @@ function speedread(text: string, tabId: number) {
         p.innerText = "Failed to create GIF";
         div.appendChild(p);
       }
-
-      // Create close button
-      let close = document.createElement("button");
-      close.innerText = "X";
-      close.style.position = "absolute";
-      close.style.top = "0";
-      close.style.right = "0";
-      close.style.padding = "10px";
-      close.style.backgroundColor = "hsl(0, 0%, 10%)";
-      close.style.border = "none";
-      close.style.color = "white";
-      close.style.fontWeight = "bold";
-      close.style.borderRadius = "0 0 0 10px";
-      close.style.cursor = "pointer";
-      close.addEventListener("click", () => div.remove());
-      div.appendChild(close);
 
       // Append to body
       body.appendChild(div);
